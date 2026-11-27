@@ -6,13 +6,13 @@
 <title>Evaluación por casos · TSE013-1 Trabajo Social y Discapacidad</title>
 <style>
   :root{
-    --fondo:#FAF7F2;
-    --texto:#263238;
-    --acento:#B26A21;
-    --acento-osc:#8A4F16;
-    --borde:#D8CDBE;
-    --panel:#F1E9DD;
-    --campo-fondo:#FFFDF9;
+    --fondo:#F6F4EF;
+    --texto:#24303E;
+    --acento:#0E7569;
+    --acento-osc:#204080;
+    --borde:#C9D3D0;
+    --panel:#E9F1EE;
+    --campo-fondo:#FEFDFB;
   }
   *{box-sizing:border-box;}
   [hidden]{display:none !important;}
@@ -103,13 +103,13 @@
   .barra{
     position:fixed;top:0;left:0;right:0;z-index:40;
     display:flex;align-items:center;gap:1em;flex-wrap:wrap;
-    background:#F3EDE3;
+    background:#EDF1F4;
     border-bottom:1px solid var(--borde);
     padding:0.5em 1em;
     font-size:0.85rem;
   }
   .barra .espacio{flex:1;}
-  .guardado{color:#4E6B4E;}
+  .guardado{color:#0E7569;}
   .contador-salidas{color:var(--acento-osc);font-weight:bold;}
   .cronometro{font-weight:bold;font-variant-numeric:tabular-nums;}
   button.boton{
@@ -181,7 +181,7 @@
   /* Modal de advertencia */
   .modal-fondo{
     position:fixed;inset:0;z-index:120;
-    background:rgba(38,50,56,0.45);
+    background:rgba(32,64,128,0.35);
     display:none;align-items:center;justify-content:center;
     padding:1rem;
   }
@@ -196,7 +196,7 @@
   /* Overlay volver a pantalla completa */
   .overlay-fs{
     position:fixed;inset:0;z-index:110;
-    background:rgba(250,247,242,0.97);
+    background:rgba(246,244,239,0.97);
     display:none;align-items:center;justify-content:center;
     text-align:center;padding:1rem;
   }
@@ -217,7 +217,7 @@
   /* Aviso sutil */
   .toast{
     position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);
-    z-index:130;background:#263238;color:#FAF7F2;
+    z-index:130;background:#24303E;color:#F6F4EF;
     padding:0.6em 1.2em;border-radius:6px;font-size:0.85rem;
     opacity:0;transition:opacity 0.25s;pointer-events:none;
     max-width:90%;
