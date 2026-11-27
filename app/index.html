@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación por casos · TSE013-1 Trabajo Social y Discapacidad</title>
+<style>
+  :root{
+    --fondo:#FAF7F2;
+    --texto:#263238;
+    --acento:#B26A21;
+    --acento-osc:#8A4F16;
+    --borde:#D8CDBE;
+    --panel:#F1E9DD;
+    --campo-fondo:#FFFDF9;
+  }
+  *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:Verdana, Arial, Tahoma, sans-serif;
+    font-size:13pt;
+    line-height:1.6;
+    letter-spacing:0.02em;
+    color:var(--texto);
+    background:var(--fondo);
+    text-align:left;
+  }
+  .contenedor{max-width:860px;margin:0 auto;padding:2.5rem 1.25rem 7rem;}
+  p{margin:0 0 1.2em;}
+  ol,ul{margin:0 0 1.2em;padding-left:1.6em;}
+  ol li,ul li{margin-bottom:0.9em;}
+  h1,h2,h3,h4{color:var(--acento-osc);line-height:1.35;letter-spacing:0.01em;}
+  h1{font-size:1.7rem;margin:0.3em 0;}
+  h2{font-size:1.35rem;margin:2.2em 0 0.8em;padding-top:1.2em;border-top:3px solid var(--acento);}
+  h3{font-size:1.12rem;margin:1.6em 0 0.6em;}
+  h4{font-size:1rem;margin:1.6em 0 0.6em;}
+  .sub{color:#5B666B;}
+  .epigrafe{font-style:italic;color:#5B666B;font-size:0.92em;margin:0.4em 0 1.4em;}
+  figure{margin:0 0 1.4em;}
+  figure img{max-width:100%;height:auto;border:1px solid var(--borde);border-radius:6px;background:#fff;}
+  table{width:100%;border-collapse:collapse;margin:0 0 1.4em;font-size:0.95em;}
+  th,td{border:1px solid var(--borde);padding:0.6em 0.7em;vertical-align:top;text-align:left;}
+  th{background:var(--panel);}
+  .portada-doc{text-align:center;padding:1em 0 1em;}
+  .portada-doc .linea-curso{margin:1em 0 0.4em;color:#5B666B;}
+  .portada-doc .tipo{font-weight:bold;font-size:1.1rem;margin:0.4em 0;}
+  .portada-doc .nombre-eva{font-weight:bold;font-size:1.5rem;color:var(--acento-osc);margin:0.2em 0;}
+  .portada-doc .cita{font-style:italic;margin:0.4em 0 1em;}
+  input.campo{
+    font:inherit;letter-spacing:inherit;color:var(--texto);
+    background:var(--campo-fondo);
+    border:1px solid var(--borde);
+    border-bottom:2px solid var(--acento);
+    border-radius:4px 4px 0 0;
+    padding:0.15em 0.4em;
+    min-width:14ch;
+  }
+  input.campo.en-linea{border:none;border-bottom:2px solid var(--acento);border-radius:0;background:transparent;min-width:16ch;}
+  input.campo.corto{min-width:5ch;width:6ch;}
+  input.campo.celda{width:100%;min-width:10ch;}
+  input.campo:focus,textarea.campo:focus{outline:2px solid var(--acento);outline-offset:1px;}
+  textarea.campo{
+    font:inherit;letter-spacing:inherit;color:var(--texto);
+    width:100%;min-height:7em;resize:vertical;
+    background:var(--campo-fondo);
+    border:1px solid var(--borde);
+    border-left:3px solid var(--acento);
+    border-radius:4px;
+    padding:0.5em 0.6em;
+    margin:0.3em 0 1em;
+  }
+  .justificacion{
+    background:var(--panel);
+    border:1px solid var(--borde);
+    border-radius:8px;
+    padding:1em 1.2em;
+    margin:1.2em 0 2em;
+  }
+  .justificacion .rotulo{font-weight:bold;}
+  .fila-concepto{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.5em;margin-top:0.9em;}
+  .anclajes{font-size:0.92em;background:var(--panel);border-radius:6px;padding:0.6em 0.6em 0.6em 2em;margin:0 0 1.4em;}
+  .anclajes li{margin-bottom:0.3em;}
+  .anclajes .era{font-weight:bold;color:var(--acento-osc);}
+  .pv{display:none;}
+  /* Banco de términos */
+  .banco{margin:0.6em 0 1.4em;}
+  .chip{
+    display:inline-block;
+    font:inherit;font-size:0.88em;
+    background:var(--panel);
+    color:var(--texto);
+    border:1px solid var(--borde);
+    border-radius:999px;
+    padding:0.15em 0.85em;
+    margin:0.2em 0.25em 0.2em 0;
+    cursor:pointer;
+  }
+  .chip:hover,.chip:focus-visible{border-color:var(--acento);color:var(--acento-osc);outline:none;}
+  .nota-chips{font-size:0.92em;background:var(--panel);border-left:3px solid var(--acento);padding:0.6em 0.9em;border-radius:0 6px 6px 0;margin-bottom:1em;}
+  /* Barra fija superior */
+  .barra{
+    position:fixed;top:0;left:0;right:0;z-index:40;
+    display:flex;align-items:center;gap:1em;flex-wrap:wrap;
+    background:#F3EDE3;
+    border-bottom:1px solid var(--borde);
+    padding:0.5em 1em;
+    font-size:0.85rem;
+  }
+  .barra .espacio{flex:1;}
+  .guardado{color:#4E6B4E;}
+  .contador-salidas{color:var(--acento-osc);font-weight:bold;}
+  .cronometro{font-weight:bold;font-variant-numeric:tabular-nums;}
+  button.boton{
+    font:inherit;font-size:0.95rem;font-weight:bold;
+    background:var(--acento);color:#fff;
+    border:none;border-radius:6px;
+    padding:0.55em 1.2em;cursor:pointer;
+  }
+  button.boton:hover,button.boton:focus-visible{background:var(--acento-osc);outline:none;}
+  button.boton.secundario{background:#fff;color:var(--acento-osc);border:2px solid var(--acento);}
+  button.boton.secundario:hover,button.boton.secundario:focus-visible{background:var(--panel);outline:none;}
+  button.boton[disabled]{opacity:0.45;cursor:not-allowed;}
+  body.con-barra .contenedor{padding-top:5.5rem;}
+  /* Pantallas a página completa (portada, reglas) */
+  .inicio{
+    position:fixed;inset:0;z-index:100;
+    background:var(--fondo);
+    overflow:auto;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:2rem 1rem;
+  }
+  .inicio .tarjeta{
+    max-width:760px;background:#fff;
+    border:1px solid var(--borde);border-top:4px solid var(--acento);
+    border-radius:10px;padding:2em 2.2em;margin:auto;
+  }
+  .inicio h1{font-size:1.4rem;}
+  .inicio ul{margin:0 0 1.4em;padding-left:1.4em;}
+  .inicio li{margin-bottom:0.7em;}
+  /* Portada con selección de casos */
+  .portada-sel{text-align:center;}
+  .portada-sel img.logo{max-width:520px;width:100%;height:auto;}
+  .portada-sel .linea-curso{margin:1em 0 0.4em;color:#5B666B;}
+  .portada-sel .nombre-eva{font-weight:bold;font-size:1.5rem;color:var(--acento-osc);margin:0.2em 0;}
+  .bloque-datos{text-align:left;background:var(--panel);border-radius:8px;padding:1em 1.2em;margin:1.4em 0;}
+  .bloque-datos label{display:block;margin-bottom:0.9em;}
+  .bloque-datos input{width:100%;max-width:32ch;}
+  .aviso-correo{color:var(--acento-osc);font-size:0.88em;display:none;margin:-0.4em 0 0.8em;}
+  .aviso-correo.visible{display:block;}
+  .tarjetas-casos{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:0.9em;margin:1em 0 1.2em;text-align:left;
+  }
+  .tarjeta-caso{
+    border:1px solid var(--borde);border-radius:8px;
+    background:var(--campo-fondo);
+    padding:0.8em 1em 0.9em;cursor:pointer;
+    font:inherit;text-align:left;width:100%;
+    position:relative;
+  }
+  .tarjeta-caso:hover,.tarjeta-caso:focus-visible{border-color:var(--acento);outline:none;}
+  .tarjeta-caso[aria-checked="true"]{border:2px solid var(--acento);background:var(--panel);}
+  .tarjeta-caso .marca{
+    display:inline-block;width:1.1em;height:1.1em;vertical-align:-0.15em;
+    border:2px solid var(--acento);border-radius:4px;margin-right:0.4em;
+    background:#fff;text-align:center;line-height:1.05em;color:#fff;font-weight:bold;
+  }
+  .tarjeta-caso[aria-checked="true"] .marca{background:var(--acento);}
+  .tarjeta-caso .marca::before{content:"";}
+  .tarjeta-caso[aria-checked="true"] .marca::before{content:"✓";}
+  .tarjeta-caso .t{font-weight:bold;color:var(--acento-osc);display:block;margin-bottom:0.25em;}
+  .tarjeta-caso .terr{font-size:0.85em;color:#5B666B;display:block;margin-bottom:0.4em;}
+  .tarjeta-caso .res{font-size:0.88em;display:block;}
+  .tarjeta-caso .tag-muestra{
+    display:inline-block;font-size:0.72em;background:var(--acento);color:#fff;
+    border-radius:4px;padding:0 0.5em;margin-left:0.5em;vertical-align:middle;
+  }
+  .contador-sel{font-weight:bold;color:var(--acento-osc);margin:0.4em 0 1em;}
+  /* Modal de advertencia */
+  .modal-fondo{
+    position:fixed;inset:0;z-index:120;
+    background:rgba(38,50,56,0.45);
+    display:none;align-items:center;justify-content:center;
+    padding:1rem;
+  }
+  .modal-fondo.visible{display:flex;}
+  .modal{
+    max-width:480px;background:#fff;border-radius:10px;
+    border-top:4px solid var(--acento);
+    padding:1.6em 1.8em;text-align:left;
+  }
+  .modal p{margin-bottom:1.2em;}
+  .modal .acciones{display:flex;gap:0.8em;flex-wrap:wrap;}
+  /* Overlay volver a pantalla completa */
+  .overlay-fs{
+    position:fixed;inset:0;z-index:110;
+    background:rgba(250,247,242,0.97);
+    display:none;align-items:center;justify-content:center;
+    text-align:center;padding:1rem;
+  }
+  .overlay-fs.visible{display:flex;}
+  /* Confirmación de envío */
+  .confirmacion{
+    position:fixed;inset:0;z-index:115;
+    background:var(--fondo);
+    display:none;align-items:center;justify-content:center;
+    padding:2rem 1rem;overflow:auto;
+  }
+  .confirmacion.visible{display:flex;}
+  .confirmacion .tarjeta{
+    max-width:560px;background:#fff;
+    border:1px solid var(--borde);border-top:4px solid #4E6B4E;
+    border-radius:10px;padding:2em 2.2em;text-align:left;
+  }
+  /* Aviso sutil */
+  .toast{
+    position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);
+    z-index:130;background:#263238;color:#FAF7F2;
+    padding:0.6em 1.2em;border-radius:6px;font-size:0.85rem;
+    opacity:0;transition:opacity 0.25s;pointer-events:none;
+    max-width:90%;
+  }
+  .toast.visible{opacity:1;}
+  .solo-impresion{display:none;}
+  .pie-pdf{margin-top:2.5em;padding-top:1em;border-top:2px solid var(--acento);font-size:0.9em;}
+  @media print{
+    body{background:#fff;font-size:11pt;}
+    .no-print{display:none !important;}
+    .barra,.inicio,.modal-fondo,.overlay-fs,.toast,.confirmacion{display:none !important;}
+    .contenedor{padding:0;max-width:100%;}
+    input.campo,textarea.campo{display:none !important;}
+    .pv{display:inline;border-bottom:1px solid #8a8a8a;padding:0 0.2em;}
+    .pv.bloque{display:block;white-space:pre-wrap;border:none;border-bottom:1px solid #8a8a8a;margin:0.3em 0 1em;min-height:1.4em;}
+    .chip{border:none;background:none;padding:0;margin:0;font-size:1em;border-radius:0;}
+    .chip::after{content:" · ";}
+    .chip.ultimo::after{content:".";}
+    .nota-chips{display:none;}
+    .justificacion{background:#fff;}
+    .solo-impresion{display:block;}
+    h2{break-after:avoid;}
+    table,figure{break-inside:avoid;}
+    .lectura{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== PORTADA: datos, explicación y selección de casos ==================== -->
+<div class="inicio no-print" id="pantalla-portada">
+  <div class="tarjeta portada-sel">
+    <img class="logo" src="assets/logo-depto.png" alt="Logo del Departamento de Trabajo Social, Universidad de Aysén">
+    <p class="linea-curso">TSE013-1 · Trabajo Social y Discapacidad · Universidad de Aysén</p>
+    <p class="nombre-eva">Evaluación por casos</p>
+    <p class="cita" style="font-style:italic;">«Un caso, varias miradas: discapacidad, Estado y territorio en la Región de Aysén»</p>
+
+    <div class="bloque-datos">
+      <p><strong>Sobre esta evaluación.</strong> Instrumento sumativo (ponderación <strong>20%</strong>) que evalúa el
+      <strong>RAE 1</strong> del curso: analizar situaciones de discapacidad desde los modelos y marcos teóricos estudiados,
+      en contextos territoriales de la Región de Aysén.</p>
+      <p><strong>Estructura:</strong> el banco contiene <strong>10 casos</strong>; usted elige y resuelve <strong>2</strong>.
+      Cada caso tiene relato, línea de tiempo, ficha de caracterización, tabla de verificación y tres lecturas con espacios
+      por completar y justificar.</p>
+      <p><strong>Puntaje total: 60 puntos</strong> = 2 casos × 30 puntos (15 espacios de lectura + 6 justificaciones +
+      5 datos de ficha + 4 datos de tabla, por caso).</p>
+    </div>
+
+    <div class="bloque-datos">
+      <label for="nombre">Nombre completo:
+        <input class="campo" type="text" id="nombre" autocomplete="off">
+      </label>
+      <label for="email">Correo institucional:
+        <input class="campo" type="email" id="email" autocomplete="off" placeholder="nombre.apellido@estudiante.uaysen.cl">
+      </label>
+      <p class="aviso-correo" id="aviso-correo">El correo ingresado no parece institucional (se espera un dominio uaysen.cl).</p>
+    </div>
+
+    <h2 style="border-top:none;margin-top:0.6em;padding-top:0;">Elija los 2 casos que resolverá</h2>
+    <p class="sub" style="font-size:0.9em;">Haga clic en dos tarjetas. La selección es definitiva al comenzar la evaluación.</p>
+    <div class="tarjetas-casos" id="tarjetas-casos" role="group" aria-label="Selección de dos casos"></div>
+    <p class="contador-sel" id="contador-sel" role="status">0 de 2 seleccionados</p>
+
+    <button class="boton" id="btn-continuar" disabled>Continuar</button>
+  </div>
+</div>
+
+<!-- ==================== Pantalla de reglas y consentimiento ==================== -->
+<div class="inicio no-print" id="pantalla-inicio" role="dialog" aria-modal="true" aria-labelledby="titulo-inicio" hidden>
+  <div class="tarjeta">
+    <h1 id="titulo-inicio">Antes de comenzar</h1>
+    <p><strong>Evaluación por casos · TSE013-1 Trabajo Social y Discapacidad</strong></p>
+    <p>Esta evaluación se rinde en pantalla completa. Salir de la pestaña, cambiar de ventana o minimizar será registrado y reportado al docente en el PDF final.</p>
+    <ul>
+      <li>Tus respuestas se guardan automáticamente en este computador a medida que escribes.</li>
+      <li>El pegado de texto, el menú contextual y los atajos del navegador están deshabilitados durante la evaluación.</li>
+      <li>La barra superior muestra el tiempo transcurrido y las salidas registradas.</li>
+      <li>Al terminar, usa el botón «Enviar evaluación». El botón «Descargar PDF» es tu respaldo: genera una copia local de tu entrega con el registro de integridad.</li>
+    </ul>
+    <button class="boton" id="btn-comenzar">Comenzar evaluación</button>
+  </div>
+</div>
+
+<!-- ==================== Barra fija ==================== -->
+<div class="barra no-print" id="barra" hidden>
+  <span><strong>TSE013-1</strong> · Evaluación por casos</span>
+  <span class="espacio"></span>
+  <span class="cronometro" id="cronometro" role="timer" aria-label="Tiempo transcurrido">Tiempo: 00:00:00</span>
+  <span class="contador-salidas" id="contador-salidas">Salidas registradas: 0</span>
+  <span class="guardado" id="aviso-guardado" role="status">Respuestas guardadas localmente</span>
+  <button class="boton secundario" id="btn-pdf" type="button">Descargar PDF</button>
+  <button class="boton" id="btn-enviar" type="button">Enviar evaluación</button>
+</div>
+
+<!-- ==================== Overlay para volver a pantalla completa ==================== -->
+<div class="overlay-fs no-print" id="overlay-fs" role="alertdialog" aria-labelledby="overlay-fs-titulo">
+  <div>
+    <h2 id="overlay-fs-titulo">Saliste de la pantalla completa</h2>
+    <p>La evaluación debe rendirse en pantalla completa.</p>
+    <button class="boton" id="btn-volver-fs" type="button">Volver a pantalla completa</button>
+  </div>
+</div>
+
+<!-- ==================== Modal de advertencia por salida ==================== -->
+<div class="modal-fondo no-print" id="modal-fondo">
+  <div class="modal" role="alertdialog" aria-labelledby="modal-titulo" aria-describedby="modal-texto">
+    <h3 id="modal-titulo">Advertencia de integridad</h3>
+    <p id="modal-texto">Se registró una salida de la evaluación.</p>
+    <button class="boton" id="btn-modal-ok" type="button">Entendido, continuar</button>
+  </div>
+</div>
+
+<!-- ==================== Modal: confirmar correo no institucional ==================== -->
+<div class="modal-fondo no-print" id="modal-correo">
+  <div class="modal" role="alertdialog" aria-labelledby="modal-correo-titulo">
+    <h3 id="modal-correo-titulo">Confirma tu correo</h3>
+    <p>El correo ingresado no pertenece a un dominio institucional (uaysen.cl). Si te equivocas, tus respuestas podrían no llegar al docente.</p>
+    <div class="acciones">
+      <button class="boton" id="btn-correo-corregir" type="button">Corregir correo</button>
+      <button class="boton secundario" id="btn-correo-continuar" type="button">Continuar de todos modos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Modal: error de envío ==================== -->
+<div class="modal-fondo no-print" id="modal-envio">
+  <div class="modal" role="alertdialog" aria-labelledby="modal-envio-titulo">
+    <h3 id="modal-envio-titulo">No se pudo enviar</h3>
+    <p id="modal-envio-texto">Hubo un problema al enviar tus respuestas. Tus respuestas siguen guardadas en este computador.</p>
+    <div class="acciones">
+      <button class="boton" id="btn-reintentar" type="button">Reintentar envío</button>
+      <button class="boton secundario" id="btn-envio-pdf" type="button">Descargar PDF de respaldo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Confirmación de envío ==================== -->
+<div class="confirmacion no-print" id="confirmacion">
+  <div class="tarjeta">
+    <h1>Evaluación enviada</h1>
+    <p id="confirmacion-detalle">Tus respuestas fueron enviadas correctamente.</p>
+    <p>Guarda además una copia local de tu entrega (incluye el registro de integridad):</p>
+    <button class="boton" id="btn-pdf-final" type="button">Descargar PDF</button>
+    <p class="sub" style="font-size:0.85em;margin-top:1.2em;">Ya puedes cerrar esta ventana.</p>
+  </div>
+</div>
+
+<div class="toast no-print" id="toast" role="status"></div>
+
+<!-- ==================== Contenido de la evaluación (se construye al comenzar) ==================== -->
+<main class="contenedor" id="contenido" hidden>
+  <div id="casos-contenido"></div>
+</main>
+
+<script src="casos-data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* ==================== CONFIGURACIÓN ==================== */
+  var CONFIG = {
+    APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxBrC_OaexClHHC03zDYJZKEWjvQouSoy8DWPpsW9amiiKMpx2HaTNQxPvzvLKTu2_A/exec" // URL del despliegue web de Google Apps Script
+  };
+  var DOMINIOS_PERMITIDOS = ["uaysen.cl"];
+  var CASOS_A_ELEGIR = 2;
+  var PREFIJO = "evalCasosTSE013v3::";
+
+  /* ==================== ESTADO ==================== */
+  var seleccion = [];          // ids de casos elegidos, en orden de elección
+  var examenIniciado = false;
+  var salidas = [];            // marcas de tiempo de cada salida registrada
+  var ultimoRegistro = 0;
+  var ultimoCampo = null;
+  var imprimiendo = false;
+  var enviando = false;
+  var inicioTS = null;         // timestamp de inicio (entrada a pantalla completa)
+  var inicioISO = null;
+  var cronoTimer = null;
+
+  var toast = document.getElementById("toast");
+  var toastTimer = null;
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+  function aviso(texto){
+    toast.textContent = texto;
+    toast.classList.add("visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove("visible"); }, 2600);
+  }
+  function lsSet(k,v){ try{ localStorage.setItem(PREFIJO + k, v); }catch(e){} }
+  function lsGet(k){ try{ return localStorage.getItem(PREFIJO + k); }catch(e){ return null; } }
+
+  /* ==================== PORTADA: tarjetas de casos ==================== */
+  function casoPorId(id){
+    for(var i=0;i<CASOS.length;i++){ if(CASOS[i].id === id){ return CASOS[i]; } }
+    return null;
+  }
+  function renderTarjetas(){
+    var cont = $("tarjetas-casos");
+    cont.innerHTML = "";
+    CASOS.forEach(function(c){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "tarjeta-caso";
+      b.setAttribute("role","checkbox");
+      b.setAttribute("aria-checked", seleccion.indexOf(c.id) >= 0 ? "true" : "false");
+      b.dataset.casoId = c.id;
+      var esMuestra = /MUESTRA/.test(c.titulo) || /MUESTRA/.test(c.resumen || "");
+      b.innerHTML =
+        '<span class="t"><span class="marca" aria-hidden="true"></span>' + esc(c.titulo) +
+        (esMuestra ? '<span class="tag-muestra">MUESTRA</span>' : '') + '</span>' +
+        '<span class="terr">Territorio: ' + esc(c.territorio) + '</span>' +
+        '<span class="res">' + esc(c.resumen) + '</span>';
+      cont.appendChild(b);
+    });
+    actualizarContadorSel();
+  }
+  function actualizarContadorSel(){
+    $("contador-sel").textContent = seleccion.length + " de " + CASOS_A_ELEGIR + " seleccionados";
+    validarContinuar();
+  }
+  $("tarjetas-casos").addEventListener("click", function(ev){
+    var t = ev.target.closest(".tarjeta-caso");
+    if(!t){ return; }
+    var id = Number(t.dataset.casoId);
+    var pos = seleccion.indexOf(id);
+    if(pos >= 0){
+      seleccion.splice(pos,1);
+      t.setAttribute("aria-checked","false");
+    }else{
+      if(seleccion.length >= CASOS_A_ELEGIR){
+        aviso("Ya seleccionaste " + CASOS_A_ELEGIR + " casos. Desmarca uno para cambiar.");
+        return;
+      }
+      seleccion.push(id);
+      t.setAttribute("aria-checked","true");
+    }
+    lsSet("seleccion", JSON.stringify(seleccion));
+    actualizarContadorSel();
+  });
+
+  /* ==================== PORTADA: datos del estudiante ==================== */
+  function correoValido(){
+    var v = $("email").value.trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+  function dominioPermitido(){
+    var v = $("email").value.trim().toLowerCase();
+    var dom = v.split("@")[1] || "";
+    return DOMINIOS_PERMITIDOS.some(function(d){ return dom === d || dom.slice(-(d.length+1)) === "." + d; });
+  }
+  function validarContinuar(){
+    var ok = seleccion.length === CASOS_A_ELEGIR &&
+             $("nombre").value.trim() !== "" &&
+             correoValido();
+    $("btn-continuar").disabled = !ok;
+    $("aviso-correo").classList.toggle("visible", correoValido() && !dominioPermitido());
+  }
+  ["nombre","email"].forEach(function(id){
+    $(id).addEventListener("input", function(){ lsSet(id, $(id).value); validarContinuar(); });
+  });
+
+  $("btn-continuar").addEventListener("click", function(){
+    if(!dominioPermitido()){
+      $("modal-correo").classList.add("visible");
+    }else{
+      irAReglas();
+    }
+  });
+  $("btn-correo-corregir").addEventListener("click", function(){
+    $("modal-correo").classList.remove("visible");
+    $("email").focus();
+  });
+  $("btn-correo-continuar").addEventListener("click", function(){
+    $("modal-correo").classList.remove("visible");
+    irAReglas();
+  });
+  function irAReglas(){
+    $("pantalla-portada").style.display = "none";
+    $("pantalla-inicio").hidden = false;
+  }
+
+  /* ==================== RENDER DE CASOS ==================== */
+  function campoHTML(id, cls, aria){
+    return '<input class="campo ' + cls + '" type="text" id="' + esc(id) + '" aria-label="' + esc(aria) + '" autocomplete="off">';
+  }
+  function renderFicha(c){
+    var html = '<h3>' + esc(c.ficha.titulo) + ' (1 punto por dato)</h3>' +
+      '<p>' + esc(c.ficha.intro || "") + '</p>' +
+      '<table><thead><tr><th>Dato</th><th>Detalle</th></tr></thead><tbody>';
+    c.ficha.filas.forEach(function(f){
+      if(f.id){
+        html += '<tr><td><label for="' + esc(f.id) + '">' + esc(f.label) + '</label></td>' +
+                '<td>' + campoHTML(f.id, "celda", f.label) + '</td></tr>';
+      }else{
+        html += '<tr><td>' + esc(f.label) + '</td><td>' + esc(f.valor) + '</td></tr>';
+      }
+    });
+    return html + '</tbody></table>';
+  }
+  function renderTabla(c){
+    var html = '<h3>' + esc(c.tabla.titulo) + ' (1 punto por celda vacía)</h3>' +
+      '<table><thead><tr>' +
+      c.tabla.columnas.map(function(col){ return '<th>' + esc(col) + '</th>'; }).join("") +
+      '</tr></thead><tbody>';
+    c.tabla.filas.forEach(function(f){
+      html += '<tr>';
+      f.celdas.forEach(function(celda, j){
+        if(celda.id){
+          var colName = c.tabla.columnas[j] || "celda";
+          var filaNombre = "";
+          for(var k=0;k<f.celdas.length;k++){
+            if(f.celdas[k].valor){ filaNombre = f.celdas[k].valor; break; }
+          }
+          html += '<td>' + campoHTML(celda.id, "celda", colName + ": " + filaNombre) + '</td>';
+        }else{
+          html += '<td>' + esc(celda.valor) + '</td>';
+        }
+      });
+      html += '</tr>';
+    });
+    return html + '</tbody></table>';
+  }
+  function renderLectura(c, lec, subNum){
+    var cid = "c" + c.id;
+    var lid = cid + "-l" + lec.numero;
+    var html = '<div class="lectura">' +
+      '<h4>' + esc(subNum) + ' Lectura desde ' + esc(lec.modelo) + ' — complete los 5 espacios y justifique 2</h4>';
+    var partes = esc(lec.texto).split(/⟦(\d+)⟧/g);
+    // partes: [texto, "1", texto, "2", ...]
+    html += '<p>';
+    for(var i=0;i<partes.length;i++){
+      if(i % 2 === 0){
+        html += partes[i];
+      }else{
+        var n = Number(partes[i]);
+        html += '(' + n + ') ' + campoHTML(lid + "-e" + n, "en-linea",
+          "Lectura " + subNum + ", espacio " + n);
+      }
+    }
+    html += '</p>';
+    html += '<div class="justificacion">' +
+      '<p class="rotulo">JUSTIFICACIÓN (2 puntos): elija DOS de los conceptos que completó en esta lectura y explique, para cada uno, qué elemento concreto del caso demuestra que ese concepto aplica. No basta con repetir la definición del concepto.</p>' +
+      '<p class="fila-concepto"><label for="' + lid + '-jc1">Concepto N.º ' +
+        campoHTML(lid + "-jc1", "corto", "Lectura " + subNum + ", número del primer concepto justificado") +
+        ' (primera justificación):</label></p>' +
+      '<textarea class="campo" id="' + lid + '-j1" aria-label="Lectura ' + subNum + ', primera justificación"></textarea>' +
+      '<p class="fila-concepto"><label for="' + lid + '-jc2">Concepto N.º ' +
+        campoHTML(lid + "-jc2", "corto", "Lectura " + subNum + ", número del segundo concepto justificado") +
+        ' (segunda justificación):</label></p>' +
+      '<textarea class="campo" id="' + lid + '-j2" aria-label="Lectura ' + subNum + ', segunda justificación"></textarea>' +
+      '</div></div>';
+    return html;
+  }
+  function renderCaso(c, orden){
+    var num = orden + 1;
+    var html = '<section>' +
+      '<h2>' + esc(c.titulo) + '</h2>' +
+      '<h3>' + num + '.1 Línea de tiempo del caso</h3>' +
+      '<figure><img src="' + esc(c.timeline.imagen) + '" alt="Línea de tiempo de los momentos históricos de la mirada hacia la discapacidad destacados en este caso">' +
+      '<figcaption class="epigrafe">Figura ' + num + '. Momentos históricos de la mirada hacia la discapacidad destacados en este caso.</figcaption></figure>';
+    if(c.timeline.anclajes && c.timeline.anclajes.length){
+      html += '<ul class="anclajes">';
+      c.timeline.anclajes.forEach(function(a){
+        html += '<li><span class="era">' + esc(a.era) + ':</span> ' + esc(a.hecho) + '</li>';
+      });
+      html += '</ul>';
+    }
+    html += '<h3>' + num + '.2 Relato del caso</h3>';
+    c.relato.forEach(function(p){ html += '<p>' + esc(p) + '</p>'; });
+    html += renderFicha(c);
+    html += renderTabla(c);
+    c.lecturas.forEach(function(lec, i){
+      html += renderLectura(c, lec, num + "." + (5 + i));
+    });
+    html += '</section>';
+    return html;
+  }
+
+  /* ==================== BANCO DE TÉRMOS (dinámico, barajado con semilla) ==================== */
+  function hashSemilla(str){
+    var h = 0;
+    for(var i=0;i<str.length;i++){ h = (Math.imul(h,31) + str.charCodeAt(i)) | 0; }
+    return h >>> 0;
+  }
+  function mulberry32(a){
+    return function(){
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function construirBanco(){
+    var terminos = [];
+    var vistos = {};
+    seleccion.forEach(function(id){
+      var c = casoPorId(id);
+      if(!c){ return; }
+      c.lecturas.forEach(function(lec){
+        lec.espacios.forEach(function(e){
+          var t = e.respuesta;
+          var clave = t.toLowerCase();
+          if(!vistos[clave]){ vistos[clave] = true; terminos.push(t); }
+        });
+      });
+    });
+    DISTRACTORES.forEach(function(t){
+      var clave = t.toLowerCase();
+      if(!vistos[clave]){ vistos[clave] = true; terminos.push(t); }
+    });
+    var rng = mulberry32(hashSemilla($("email").value.trim().toLowerCase()));
+    for(var i=terminos.length-1;i>0;i--){
+      var j = Math.floor(rng() * (i+1));
+      var tmp = terminos[i]; terminos[i] = terminos[j]; terminos[j] = tmp;
+    }
+    var banco = $("banco-terminos");
+    banco.innerHTML = "";
+    terminos.forEach(function(t, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip" + (i === terminos.length-1 ? " ultimo" : "");
+      b.textContent = t;
+      banco.appendChild(b);
+    });
+  }
+
+  /* ==================== CONTENIDO COMPLETO ==================== */
+  function construirContenido(){
+    var nombre = esc($("nombre").value.trim());
+    var email = esc($("email").value.trim());
+    var html =
+      '<header class="portada-doc">' +
+        '<p class="linea-curso">TSE013-1 · Trabajo Social y Discapacidad · Universidad de Aysén</p>' +
+        '<p class="tipo">EVALUACIÓN SUMATIVA (ponderación 20% · RAE 1)</p>' +
+        '<p class="nombre-eva">Evaluación por casos</p>' +
+        '<p class="cita">«Un caso, varias miradas: discapacidad, Estado y territorio en la Región de Aysén»</p>' +
+        '<p>Estudiante: <span id="doc-nombre">' + nombre + '</span> · Correo: <span id="doc-email">' + email + '</span></p>' +
+        '<p class="sub">Puntaje total: 60 puntos = 2 casos × 30 puntos.</p>' +
+      '</header>' +
+      '<section>' +
+        '<h2>Indicaciones generales</h2>' +
+        '<ol>' +
+          '<li>Modalidad individual. Los casos son ficticios pero fidedignos a la realidad territorial e institucional de la Región de Aysén. Todos los nombres, datos y menciones institucionales son simulados.</li>' +
+          '<li>Cada caso tiene estructura idéntica: (a) título y línea de tiempo histórica; (b) relato del caso; (c) ficha de caracterización por completar; (d) tabla de verificación; (e) tres lecturas comentadas con espacios en blanco, cada una con una breve justificación al final.</li>' +
+          '<li>Complete la ficha y las tablas usando la información del relato. Algunos datos se encuentran directamente en el texto; otros debe INFERIRLOS a partir del relato y del material de estudio.</li>' +
+          '<li>Complete cada espacio con la palabra o frase que corresponde. Puede apoyarse en el Banco de términos (Sección 0), que se presenta como lista única mezclada e incluye términos que NO se usan en ninguna lectura (distractores). Al final de cada lectura, JUSTIFIQUE dos de los conceptos que completó: indique qué elemento concreto del caso demuestra que ese concepto aplica.</li>' +
+          '<li>Eje transversal: cada caso dialoga con los momentos históricos de la relación discapacidad—Estado (marginación y caridad, encierro fabril, medicalización y eugenesia, Estado de bienestar, modelo social, gobierno neoliberal y CDPD). La línea de tiempo de cada caso destaca los momentos en juego.</li>' +
+        '</ol>' +
+      '</section>' +
+      '<section>' +
+        '<h2>Sección 0 · Banco de términos</h2>' +
+        '<p>Lista única y mezclada: cada término puede pertenecer a cualquiera de los modelos o marcos del curso; la lista incluye distractores que no se usan en ninguna lectura. Un mismo término es respuesta en una sola lectura.</p>' +
+        '<p class="nota-chips no-print">Si lo necesitas, haz clic en un término para insertarlo en el último campo donde estabas escribiendo.</p>' +
+        '<div class="banco" id="banco-terminos"></div>' +
+      '</section>';
+    seleccion.forEach(function(id, idx){
+      var c = casoPorId(id);
+      if(c){ html += renderCaso(c, idx); }
+    });
+    html +=
+      '<section>' +
+        '<h2>Declaración y firma</h2>' +
+        '<p>Declaro que esta evaluación fue resuelta de manera individual, con apoyo exclusivo de los materiales entregados y de las clases del curso.</p>' +
+        '<p><label for="firma">Firma: <input class="campo en-linea" type="text" id="firma" autocomplete="off" style="min-width:30ch;"></label></p>' +
+      '</section>' +
+      '<footer class="pie-pdf solo-impresion" id="pie-pdf">' +
+        '<p id="pie-identidad"></p>' +
+        '<p id="pie-tiempo"></p>' +
+        '<p id="pie-integridad"></p>' +
+      '</footer>';
+    $("casos-contenido").innerHTML = html;
+    construirBanco();
+    document.getElementById("banco-terminos").addEventListener("click", onChipClick);
+  }
+
+  /* ==================== Autoguardado en localStorage ==================== */
+  function guardar(campo){
+    lsSet(campo.id, campo.value);
+    $("aviso-guardado").textContent = "Respuestas guardadas localmente";
+  }
+  function restaurarCampos(){
+    document.querySelectorAll(".campo").forEach(function(campo){
+      var v = lsGet(campo.id);
+      if(v !== null){ campo.value = v; }
+    });
+  }
+  document.addEventListener("input", function(ev){
+    if(ev.target && ev.target.classList && ev.target.classList.contains("campo")){
+      guardar(ev.target);
+    }
+  });
+
+  /* ==================== Último campo enfocado (para los chips) ==================== */
+  document.addEventListener("focusin", function(ev){
+    if(ev.target && ev.target.classList && ev.target.classList.contains("campo")){
+      ultimoCampo = ev.target;
+    }
+  });
+  function onChipClick(ev){
+    var chip = ev.target.closest(".chip");
+    if(!chip){ return; }
+    if(ultimoCampo && document.contains(ultimoCampo)){
+      var inicio = ultimoCampo.selectionStart;
+      var fin = ultimoCampo.selectionEnd;
+      if(typeof inicio === "number"){
+        ultimoCampo.setRangeText(chip.textContent, inicio, fin, "end");
+      }else{
+        ultimoCampo.value += (ultimoCampo.value ? " " : "") + chip.textContent;
+      }
+      ultimoCampo.dispatchEvent(new Event("input", {bubbles:true}));
+      ultimoCampo.focus();
+    }else{
+      aviso("Primero haz clic en el campo donde quieres insertar el término.");
+    }
+  }
+
+  /* ==================== Pantalla de inicio, pantalla completa y cronómetro ==================== */
+  function pedirPantallaCompleta(){
+    try{
+      var p = document.documentElement.requestFullscreen();
+      if(p && p.catch){ p.catch(function(){}); }
+    }catch(e){}
+  }
+  function formatoDuracion(seg){
+    var h = Math.floor(seg/3600), m = Math.floor((seg%3600)/60), s = seg%60;
+    return String(h).padStart(2,"0") + ":" + String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+  }
+  function duracionSeg(){
+    if(!inicioTS){ return 0; }
+    return Math.max(0, Math.round((Date.now() - inicioTS)/1000));
+  }
+  function actualizarCronometro(){
+    $("cronometro").textContent = "Tiempo: " + formatoDuracion(duracionSeg());
+  }
+  $("btn-comenzar").addEventListener("click", function(){
+    examenIniciado = true;
+    if(!inicioTS){
+      inicioTS = Date.now();
+      inicioISO = new Date(inicioTS).toISOString();
+      lsSet("inicioISO", inicioISO);
+    }
+    pedirPantallaCompleta();
+    construirContenido();
+    restaurarCampos();
+    $("pantalla-inicio").hidden = true;
+    $("contenido").hidden = false;
+    $("barra").hidden = false;
+    document.body.classList.add("con-barra");
+    actualizarContadorSalidas();
+    actualizarCronometro();
+    cronoTimer = setInterval(actualizarCronometro, 1000);
+    window.scrollTo(0,0);
+  });
+
+  /* ==================== Registro de integridad ==================== */
+  function hora(fecha){
+    var h = String(fecha.getHours()).padStart(2,"0");
+    var m = String(fecha.getMinutes()).padStart(2,"0");
+    return h + ":" + m;
+  }
+  function actualizarContadorSalidas(){
+    $("contador-salidas").textContent = "Salidas registradas: " + salidas.length;
+  }
+  function registrarSalida(){
+    if(!examenIniciado || imprimiendo){ return; }
+    var ahora = Date.now();
+    if(ahora - ultimoRegistro < 1500){ return; } // evita doble conteo blur+visibilitychange
+    ultimoRegistro = ahora;
+    salidas.push(ahora);
+    actualizarContadorSalidas();
+    $("modal-texto").textContent =
+      "Se registró una salida de la evaluación (" + salidas.length + "). Permanece en esta ventana.";
+    $("modal-fondo").classList.add("visible");
+    lsSet("salidas", JSON.stringify(salidas));
+  }
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden){ registrarSalida(); }
+  });
+  window.addEventListener("blur", function(){
+    if(!document.hidden){ registrarSalida(); }
+  });
+  document.addEventListener("fullscreenchange", function(){
+    if(examenIniciado && !document.fullscreenElement){
+      registrarSalida();
+      $("overlay-fs").classList.add("visible");
+    }else{
+      $("overlay-fs").classList.remove("visible");
+    }
+  });
+  $("btn-volver-fs").addEventListener("click", function(){
+    pedirPantallaCompleta();
+    $("overlay-fs").classList.remove("visible");
+  });
+  $("btn-modal-ok").addEventListener("click", function(){
+    $("modal-fondo").classList.remove("visible");
+    if(ultimoCampo && document.contains(ultimoCampo)){ ultimoCampo.focus(); }
+  });
+
+  /* ==================== Bloqueos: menú contextual, pegado y atajos ==================== */
+  document.addEventListener("contextmenu", function(ev){
+    ev.preventDefault();
+    aviso("El menú contextual está deshabilitado durante la evaluación.");
+  });
+  document.addEventListener("paste", function(ev){
+    if(ev.target && ev.target.classList && ev.target.classList.contains("campo")){
+      ev.preventDefault();
+      aviso("El pegado está deshabilitado: escribe tu respuesta.");
+    }
+  });
+  document.addEventListener("keydown", function(ev){
+    var k = (ev.key || "").toLowerCase();
+    var bloqueado =
+      ev.key === "F12" ||
+      (ev.ctrlKey && !ev.shiftKey && (k === "u" || k === "s" || k === "p")) ||
+      (ev.ctrlKey && ev.shiftKey && (k === "i" || k === "j" || k === "c"));
+    if(bloqueado){
+      ev.preventDefault();
+      aviso("Ese atajo está deshabilitado durante la evaluación. Usa el botón «Descargar PDF».");
+    }
+  });
+
+  /* ==================== Impresión / PDF ==================== */
+  function spanImpresion(campo){
+    var pv = campo.parentNode.querySelector('[data-pv="' + campo.id + '"]');
+    if(!pv){
+      pv = document.createElement("span");
+      pv.className = "pv" + (campo.tagName === "TEXTAREA" ? " bloque" : "");
+      pv.setAttribute("data-pv", campo.id);
+      pv.setAttribute("aria-hidden", "true");
+      campo.insertAdjacentElement("afterend", pv);
+    }
+    return pv;
+  }
+  function prepararImpresion(){
+    document.querySelectorAll("#contenido .campo").forEach(function(campo){
+      var pv = spanImpresion(campo);
+      pv.textContent = campo.value.trim() !== "" ? campo.value : "____________________";
+    });
+    var nombre = $("nombre").value.trim() || "____________________";
+    var email = $("email").value.trim() || "____________________";
+    var titulos = seleccion.map(function(id){
+      var c = casoPorId(id);
+      return c ? "caso " + c.id : String(id);
+    }).join(" y ");
+    $("pie-identidad").textContent =
+      "Estudiante: " + nombre + " · Correo: " + email + " · Casos rendidos: " + titulos;
+    $("pie-tiempo").textContent =
+      "Inicio: " + (inicioTS ? new Date(inicioTS).toLocaleString("es-CL") : "—") +
+      " · Duración total: " + formatoDuracion(duracionSeg());
+    var horas = salidas.map(function(t){ return hora(new Date(t)); }).join(", ");
+    $("pie-integridad").textContent =
+      "Registro de integridad: " + salidas.length +
+      (salidas.length === 1 ? " salida de la ventana" : " salidas de la ventana") +
+      (salidas.length ? " (" + horas + ")." : ".");
+  }
+  window.addEventListener("beforeprint", prepararImpresion);
+  function descargarPDF(){
+    prepararImpresion();
+    imprimiendo = true;
+    window.print();
+    setTimeout(function(){ imprimiendo = false; }, 3000);
+  }
+  $("btn-pdf").addEventListener("click", descargarPDF);
+  $("btn-pdf-final").addEventListener("click", descargarPDF);
+  window.addEventListener("afterprint", function(){
+    setTimeout(function(){ imprimiendo = false; }, 1000);
+  });
+
+  /* ==================== Envío a Apps Script ==================== */
+  function construirPayload(){
+    var respuestas = {};
+    var conceptos = {};
+    document.querySelectorAll("#contenido .campo").forEach(function(campo){
+      if(/-jc[12]$/.test(campo.id)){
+        conceptos[campo.id] = campo.value.trim();
+      }else{
+        respuestas[campo.id] = campo.value;
+      }
+    });
+    return {
+      nombre: $("nombre").value.trim(),
+      email: $("email").value.trim(),
+      casos: seleccion.slice(),
+      inicioISO: inicioISO,
+      duracionSeg: duracionSeg(),
+      salidas: salidas.map(function(t){ return new Date(t).toISOString(); }),
+      respuestas: respuestas,
+      conceptosJustificados: conceptos
+    };
+  }
+  function limpiarAutoguardado(){
+    try{
+      var borrar = [];
+      for(var i=0;i<localStorage.length;i++){
+        var k = localStorage.key(i);
+        if(k && k.indexOf(PREFIJO) === 0){ borrar.push(k); }
+      }
+      borrar.forEach(function(k){ localStorage.removeItem(k); });
+    }catch(e){}
+  }
+  function enviar(){
+    if(enviando){ return; }
+    if(!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL === "PEGAR_URL_APPS_SCRIPT_AQUI"){
+      $("modal-envio-texto").textContent =
+        "El envío en línea aún no está configurado. Descarga el PDF de respaldo y entrégalo según las indicaciones del curso.";
+      $("modal-envio").classList.add("visible");
+      return;
+    }
+    enviando = true;
+    $("btn-enviar").disabled = true;
+    $("aviso-guardado").textContent = "Enviando…";
+    fetch(CONFIG.APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: {"Content-Type": "text/plain"},
+      body: JSON.stringify(construirPayload())
+    }).then(function(resp){
+      if(!resp.ok){ throw new Error("HTTP " + resp.status); }
+      limpiarAutoguardado();
+      if(cronoTimer){ clearInterval(cronoTimer); }
+      $("confirmacion-detalle").textContent =
+        "Tus respuestas fueron enviadas correctamente (" + $("email").value.trim() +
+        "). Duración registrada: " + formatoDuracion(duracionSeg()) + ".";
+      $("confirmacion").classList.add("visible");
+      $("aviso-guardado").textContent = "Evaluación enviada";
+    }).catch(function(){
+      $("modal-envio-texto").textContent =
+        "Hubo un problema al enviar tus respuestas (revisa tu conexión). Tus respuestas siguen guardadas en este computador: puedes reintentar o descargar el PDF de respaldo.";
+      $("modal-envio").classList.add("visible");
+      $("aviso-guardado").textContent = "Respuestas guardadas localmente";
+    }).finally(function(){
+      enviando = false;
+      $("btn-enviar").disabled = false;
+    });
+  }
+  $("btn-enviar").addEventListener("click", enviar);
+  $("btn-reintentar").addEventListener("click", function(){
+    $("modal-envio").classList.remove("visible");
+    enviar();
+  });
+  $("btn-envio-pdf").addEventListener("click", function(){
+    $("modal-envio").classList.remove("visible");
+    descargarPDF();
+  });
+
+  /* ==================== Restauración inicial de la portada ==================== */
+  (function restaurarPortada(){
+    var n = lsGet("nombre"); if(n !== null){ $("nombre").value = n; }
+    var e = lsGet("email");  if(e !== null){ $("email").value = e; }
+    try{
+      var sel = JSON.parse(lsGet("seleccion") || "[]");
+      if(Array.isArray(sel)){
+        seleccion = sel.filter(function(id){ return casoPorId(Number(id)); }).map(Number);
+      }
+    }catch(e2){}
+    try{
+      var sal = JSON.parse(lsGet("salidas") || "[]");
+      if(Array.isArray(sal)){ salidas = sal; }
+    }catch(e3){}
+    var ini = lsGet("inicioISO");
+    if(ini){
+      var t = Date.parse(ini);
+      if(!isNaN(t)){ inicioTS = t; inicioISO = ini; }
+    }
+    renderTarjetas();
+    validarContinuar();
+  })();
+})();
+</script>
+</body>
+</html>
